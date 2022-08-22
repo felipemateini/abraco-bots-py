@@ -1,0 +1,21 @@
+import win32com.client
+import time
+import os
+
+xlapp = win32com.client.DispatchEx("Excel.Application")
+xlapp.DisplayAlerts = False
+xlapp.Visible = False
+Folder_Path = r'H:\Meu Drive\Colab Notebooks\Fichas_Tecnicas'
+
+for root, dirs, files in os.walk(Folder_Path):
+    for file_name in files:
+        file_path = root + '/' + file_name
+        wb = xlapp.Workbooks.Open(file_path)
+        wb.RefreshAll()
+        time.sleep(5)
+        wb.Save()
+        wb.Close()
+       
+    del wb
+del xlapp
+print ('Arquivos Atualizados')
