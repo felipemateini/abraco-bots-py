@@ -1,0 +1,21 @@
+from glob import glob
+import pandas as pd
+import numpy as np
+
+from google.colab import drive
+drive.mount("/content/drive", force_remount=True)
+
+df_custo = pd.concat((pd.read_excel(cont, sheet_name='FICHA DE CUSTO') for cont in sorted(glob('/content/drive/MyDrive/Colab Notebooks/Ficha_Tecnica/*.xlsm'))), ignore_index=True)
+
+df_custo_1 = df_custo[df_custo['Unnamed: 7'].isin(['CPK Total'])]
+df_custo_2 = df_custo_1[~df_custo_1['Unnamed: 8'].isnull()]
+df_custo_3 = df_custo_2.iloc[:,6:9]
+df_custo_4 = df_custo_3.drop(['Unnamed: 7'], axis = 1)
+df_custo_5 = df_custo_4.rename(columns={'Unnamed: 6':'Preparações', 'Unnamed: 8': 'CPK'})
+df_custo_5['CPK'] = round(df_custo_5['CPK'].astype('float64'),2)
+display(df_custo_5)
+
+drive.mount('/content/drive', force_remount=True)
+
+path = 'drive/MyDrive/CPK/'
+df_custo_5.to_excel(path+"CPK_preparacoes.xlsx", index=None)
